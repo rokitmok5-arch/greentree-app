@@ -200,13 +200,13 @@ const RealEstateLeadGenerator = () => {
         <div className="p-6 border-b border-gray-200">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="flex items-center gap-4 border border-gray-200 rounded-lg p-4">
-              <img src="/qr_code.jpg" alt="QR code for Home Valuation page" className="w-20 h-20 rounded-md border border-gray-200" />
+              <img src={`${import.meta.env.BASE_URL}qr_code.jpg`} alt="QR code for Home Valuation page" className="w-20 h-20 rounded-md border border-gray-200" />
               <div>
                 <div className="font-semibold text-gray-900">Home Valuation</div>
               </div>
             </div>
             <div className="flex items-center gap-4 border border-gray-200 rounded-lg p-4">
-              <img src="/qr_code_2.jpg" alt="QR code for Calendly booking page" className="w-20 h-20 rounded-md border border-gray-200" />
+              <img src={`${import.meta.env.BASE_URL}qr_code_2.jpg`} alt="QR code for Calendly booking page" className="w-20 h-20 rounded-md border border-gray-200" />
               <div>
                 <div className="font-semibold text-gray-900">Book a Call (Calendly)</div>
               </div>
