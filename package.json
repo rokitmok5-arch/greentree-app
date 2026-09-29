@@ -10,7 +10,7 @@
     "dev:all": "concurrently -n server,vite -c green,blue \"npm:server\" \"npm:dev\""
   },
   "dependencies": {
-    "@anthropic-ai/sdk": "^0.70.0",
+    "@anthropic-ai/sdk": "^0.129.0",
     "cors": "^2.8.5",
     "dotenv": "^16.4.5",
     "express": "^4.21.0",
