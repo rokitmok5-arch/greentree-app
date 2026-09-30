@@ -8,11 +8,11 @@ import { fmtCompact, fmtCurrency, fmtDriver, fmtInt, fmtKpi, fmtMultiple, fmtPer
 // ---------- shared pieces ----------
 
 export const Card = ({ title, subtitle, action, children, className = '' }) => (
-  <section className={`bg-white rounded-lg shadow-sm ${className}`}>
+  <section className={`panel ${className}`}>
     {(title || action) && (
       <div className="px-6 pt-5 pb-3 flex items-start justify-between gap-4">
         <div>
-          {title && <h3 className="text-lg font-semibold text-gray-900">{title}</h3>}
+          {title && <h3 className="font-display text-2xl text-stone-900">{title}</h3>}
           {subtitle && <p className="text-sm text-gray-500">{subtitle}</p>}
         </div>
         {action}
@@ -23,9 +23,9 @@ export const Card = ({ title, subtitle, action, children, className = '' }) => (
 );
 
 const StatTile = ({ label, value, detail }) => (
-  <div className="bg-white p-5 rounded-lg shadow-sm">
-    <p className="text-sm font-medium text-gray-600">{label}</p>
-    <p className="text-2xl font-bold text-gray-900 tabular-nums mt-1">{value}</p>
+  <div className="panel p-5">
+    <p className="eyebrow">{label}</p>
+    <p className="font-display text-3xl text-stone-900 tabular-nums mt-1">{value}</p>
     {detail && <p className="text-xs text-gray-500 mt-1">{detail}</p>}
   </div>
 );
@@ -100,7 +100,7 @@ export function Dashboard({ campaigns, goal, goToAnalysis }) {
 
 function TacticList({ title, rows, empty, onMore }) {
   return (
-    <Card title={title} action={<button onClick={onMore} className="text-sm text-green-700 hover:underline">Full analysis →</button>}>
+    <Card title={title} action={<button onClick={onMore} className="text-sm text-gold hover:underline">Full analysis →</button>}>
       {rows.length ? (
         <ul className="space-y-3">
           {rows.map(r => (
@@ -146,22 +146,25 @@ export function CampaignsView({ campaigns, allCount, strategies, goal, onAdd, on
   return (
     <div className="space-y-6">
       <div className="flex flex-wrap items-center justify-between gap-3">
-        <h2 className="text-2xl font-bold">Campaigns & posts</h2>
+        <div>
+          <p className="eyebrow">Performance tracking</p>
+          <h2 className="font-display text-3xl text-stone-900">Campaigns & posts</h2>
+        </div>
         <div className="flex flex-wrap gap-2">
-          <button onClick={onAdd} className="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 flex items-center gap-2 text-sm">
+          <button onClick={onAdd} className="btn-primary px-4 py-2 rounded-md flex items-center gap-2 text-sm">
             <Plus className="w-4 h-4" />Add campaign
           </button>
-          <button onClick={() => fileInput.current?.click()} className="border border-gray-300 bg-white px-4 py-2 rounded-lg hover:bg-gray-50 flex items-center gap-2 text-sm">
+          <button onClick={() => fileInput.current?.click()} className="border border-stone-300 bg-white px-4 py-2 rounded-md hover:bg-stone-50 flex items-center gap-2 text-sm">
             <Upload className="w-4 h-4" />Import CSV
           </button>
           <input ref={fileInput} type="file" accept=".csv,text/csv" className="hidden" onChange={handleFile} />
-          <button onClick={onExport} className="border border-gray-300 bg-white px-4 py-2 rounded-lg hover:bg-gray-50 flex items-center gap-2 text-sm">
+          <button onClick={onExport} className="border border-stone-300 bg-white px-4 py-2 rounded-md hover:bg-stone-50 flex items-center gap-2 text-sm">
             <Download className="w-4 h-4" />Export CSV
           </button>
         </div>
       </div>
 
-      <div className="bg-white p-4 rounded-lg shadow-sm flex flex-wrap items-center gap-3">
+      <div className="panel p-4 flex flex-wrap items-center gap-3">
         <input
           value={query}
           onChange={e => setQuery(e.target.value)}
@@ -173,7 +176,7 @@ export function CampaignsView({ campaigns, allCount, strategies, goal, onAdd, on
         <button onClick={onClearAll} className="text-sm text-red-600 hover:underline">Clear all</button>
       </div>
 
-      <div className="bg-white rounded-lg shadow-sm overflow-hidden">
+      <div className="panel overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
             <thead className="bg-gray-50">
@@ -188,8 +191,8 @@ export function CampaignsView({ campaigns, allCount, strategies, goal, onAdd, on
                 <tr key={c.id} className="hover:bg-gray-50 align-top">
                   <td className="px-4 py-3 min-w-[14rem]">
                     <div className="font-medium text-gray-900">{c.name}</div>
-                    <div className="text-xs text-gray-500">{c.platform} · {c.tactic} · {c.objective}</div>
-                    {strategyName(c.strategyId) && <div className="text-xs text-green-700 mt-0.5">↳ {strategyName(c.strategyId)}</div>}
+                    <div className="text-xs text-gray-500">{c.platform} · {c.tactic}{c.pillar ? ` · ${c.pillar}` : ''} · {c.objective}</div>
+                    {strategyName(c.strategyId) && <div className="text-xs text-gold mt-0.5">↳ {strategyName(c.strategyId)}</div>}
                   </td>
                   <td className="px-4 py-3 text-right tabular-nums">{c.spend > 0 ? fmtCurrency(c.spend) : <span className="text-gray-400">organic</span>}</td>
                   <td className="px-4 py-3 text-right tabular-nums">{fmtCompact(row.stats.impressions)}</td>
@@ -214,7 +217,7 @@ export function CampaignsView({ campaigns, allCount, strategies, goal, onAdd, on
       </div>
 
       <p className="text-xs text-gray-500">
-        CSV columns: name, platform, tactic, objective, startDate, endDate, spend, impressions, reach, engagements, clicks, leads, conversions, revenue, notes.
+        CSV columns: name, platform, tactic, pillar, objective, startDate, endDate, spend, impressions, reach, engagements, clicks, leads, conversions, revenue, notes.
         Common ad-export headers such as "Amount spent", "Link clicks", "Results" and "Campaign name" are recognized too.
       </p>
     </div>
@@ -265,10 +268,10 @@ export function PlatformsView({ campaigns, goal }) {
           const best = onPlatform[0];
           const worst = onPlatform.length > 1 ? onPlatform[onPlatform.length - 1] : null;
           return (
-            <div key={p.key} className="bg-white rounded-lg shadow-sm p-5">
+            <div key={p.key} className="panel p-5">
               <div className="flex items-start justify-between mb-4">
                 <div>
-                  <h3 className="font-semibold text-lg text-gray-900">{p.key}</h3>
+                  <h3 className="font-display text-2xl text-stone-900">{p.key}</h3>
                   <p className="text-xs text-gray-500">{plural(p.stats.count, 'campaign')} · index {p.index ?? '—'}</p>
                 </div>
                 <VerdictBadge verdict={p.verdict} />
@@ -307,6 +310,7 @@ export function AnalysisView({ campaigns, strategies, goal }) {
   const tactics = useMemo(() => rankGroups(campaigns, c => c.tactic, goal), [campaigns, goal]);
   const platforms = useMemo(() => rankGroups(campaigns, c => c.platform, goal), [campaigns, goal]);
   const combos = useMemo(() => rankGroups(campaigns, c => `${c.platform}|${c.tactic}`, goal), [campaigns, goal]);
+  const pillars = useMemo(() => rankGroups(campaigns.filter(c => c.pillar), c => c.pillar, goal), [campaigns, goal]);
 
   const cells = useMemo(() => new Map(combos.map(r => [r.key, { index: r.index, tooltip: statsTooltip(r) }])), [combos]);
 
@@ -316,6 +320,11 @@ export function AnalysisView({ campaigns, strategies, goal }) {
     <div className="space-y-6">
       <Card title="Which tactics work" subtitle={`Each tactic is compared with your overall average, scored for ${SCORING_GOALS[goal].label.toLowerCase()}. Change the goal in the filter bar.`}>
         <IndexChart rows={tactics.map(r => ({ ...r, tooltip: statsTooltip(r) }))} />
+      </Card>
+
+      <Card title="Which content pillars work" subtitle="Organic content grouped by pillar and compared with the average of all content that has a pillar. Paid ads are left out.">
+        {pillars.length ? <IndexChart rows={pillars.map(r => ({ ...r, tooltip: statsTooltip(r) }))} />
+          : <Empty>Tag campaigns with a content pillar to compare pillars.</Empty>}
       </Card>
 
       <Card title="Platform × tactic" subtitle="Where each tactic works best. Blue beats your average, red trails it, gray is about average.">
@@ -355,7 +364,7 @@ export function AnalysisView({ campaigns, strategies, goal }) {
         </p>
       </Card>
 
-      <AIInsights campaigns={campaigns} strategies={strategies} goal={goal} tactics={tactics} platforms={platforms} combos={combos} />
+      <AIInsights campaigns={campaigns} strategies={strategies} goal={goal} tactics={tactics} platforms={platforms} combos={combos} pillars={pillars} />
     </div>
   );
 }
@@ -379,7 +388,7 @@ const summarize = r => ({
 
 const PRIORITY_STYLES = { high: 'bg-red-50 text-red-800', medium: 'bg-yellow-50 text-yellow-800', low: 'bg-gray-100 text-gray-700' };
 
-function AIInsights({ campaigns, strategies, goal, tactics, platforms, combos }) {
+function AIInsights({ campaigns, strategies, goal, tactics, platforms, combos, pillars }) {
   const [state, setState] = useState({ status: 'idle' });
 
   const run = async () => {
@@ -395,6 +404,7 @@ function AIInsights({ campaigns, strategies, goal, tactics, platforms, combos })
           tactics: tactics.map(summarize),
           platforms: platforms.map(summarize),
           combos: combos.filter(c => c.index !== null).map(summarize),
+          pillars: pillars.map(summarize),
           strategies: strategies.map(s => ({ name: s.name, objective: s.objective, status: s.status, kpi: s.kpi, target: s.target, hypothesis: s.hypothesis }))
         })
       });
@@ -412,7 +422,7 @@ function AIInsights({ campaigns, strategies, goal, tactics, platforms, combos })
       title="AI strategy review"
       subtitle="Claude reads these numbers and suggests what to double down on, what to cut, and what to test next."
       action={
-        <button onClick={run} disabled={state.status === 'loading'} className="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 flex items-center gap-2 text-sm disabled:opacity-50 whitespace-nowrap">
+        <button onClick={run} disabled={state.status === 'loading'} className="btn-primary px-4 py-2 rounded-md flex items-center gap-2 text-sm disabled:opacity-50 whitespace-nowrap">
           <Sparkles className="w-4 h-4" />{state.status === 'loading' ? 'Analyzing...' : data ? 'Re-run' : 'Analyze'}
         </button>
       }
@@ -485,10 +495,11 @@ export function StrategiesView({ strategies, campaigns, onAdd, onEdit, onDelete 
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h2 className="text-2xl font-bold">Strategies</h2>
+          <p className="eyebrow">Growth plan</p>
+          <h2 className="font-display text-3xl text-stone-900">Strategies</h2>
           <p className="text-sm text-gray-500">Write down a hypothesis, link campaigns to it, and track it against a target.</p>
         </div>
-        <button onClick={onAdd} className="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 flex items-center gap-2 text-sm">
+        <button onClick={onAdd} className="btn-primary px-4 py-2 rounded-md flex items-center gap-2 text-sm">
           <Plus className="w-4 h-4" />New strategy
         </button>
       </div>
@@ -502,10 +513,10 @@ export function StrategiesView({ strategies, campaigns, onAdd, onEdit, onDelete 
           const actual = linked.length ? kpiValue(aggregate(linked), s.kpi) : null;
           const onTrack = kpiOnTrack(Number.isFinite(actual) ? actual : null, s.target, kpi.better);
           return (
-            <div key={s.id} className="bg-white rounded-lg shadow-sm p-5 flex flex-col">
+            <div key={s.id} className="panel p-5 flex flex-col">
               <div className="flex items-start justify-between gap-3">
                 <div>
-                  <h3 className="font-semibold text-lg text-gray-900">{s.name}</h3>
+                  <h3 className="font-display text-2xl text-stone-900">{s.name}</h3>
                   <p className="text-xs text-gray-500">{s.objective}</p>
                 </div>
                 <div className="flex items-center gap-2 shrink-0">

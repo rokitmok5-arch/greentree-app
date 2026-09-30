@@ -72,7 +72,7 @@ export function IndexChart({ rows, onSelect }) {
 
   return (
     <div>
-      <div className="grid grid-cols-[minmax(0,6.5rem)_1fr_2.5rem] sm:grid-cols-[minmax(0,10rem)_1fr_3rem] gap-3 text-xs mb-1" style={{ color: 'var(--viz-ink-3)' }}>
+      <div className="grid grid-cols-[minmax(0,6.5rem)_1fr_2.5rem] sm:grid-cols-[minmax(0,12.5rem)_1fr_3rem] gap-3 text-xs mb-1" style={{ color: 'var(--viz-ink-3)' }}>
         <span />
         <div className="flex justify-between">
           <span>← below average</span>
@@ -88,7 +88,7 @@ export function IndexChart({ rows, onSelect }) {
           return (
             <div
               key={row.key}
-              className={`grid grid-cols-[minmax(0,6.5rem)_1fr_2.5rem] sm:grid-cols-[minmax(0,10rem)_1fr_3rem] items-center gap-3 py-0.5 rounded hover:bg-gray-50 ${onSelect ? 'cursor-pointer' : ''}`}
+              className={`grid grid-cols-[minmax(0,6.5rem)_1fr_2.5rem] sm:grid-cols-[minmax(0,12.5rem)_1fr_3rem] items-center gap-3 py-0.5 rounded hover:bg-gray-50 ${onSelect ? 'cursor-pointer' : ''}`}
               onClick={onSelect ? () => onSelect(row.key) : undefined}
               onMouseMove={e => show(e, <TooltipBody title={row.key} lines={row.tooltip} />)}
               onMouseLeave={hide}

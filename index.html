@@ -3,10 +3,21 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>GreenTree Marketing Hub</title>
+    <title>Green Tree Properties · Marketing Studio</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
       :root {
+        /* Brand: deep evergreen, champagne gold, warm ivory. */
+        --brand: #1f3a2e;
+        --brand-dark: #142820;
+        --gold: #b3915a;
+        --gold-light: #d9c39a;
+        --ivory: #f8f6f1;
+        --line: #e7e2d8;
+
         /* Chart tokens: blue = above average, red = below, gray = neutral midpoint. */
         --viz-good: #2a78d6;
         --viz-good-rgb: 42 120 214;
@@ -17,10 +28,24 @@
         --viz-ink-2: #52514e;
         --viz-ink-3: #898781;
         --viz-axis: #c3c2b7;
-        --viz-tooltip-bg: #1f2937;
+        --viz-tooltip-bg: #1c1917;
         --viz-tooltip-ink: #ffffff;
       }
-      body { background: #f9fafb; }
+      body {
+        background: var(--ivory);
+        font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif;
+        color: #1c1917;
+        -webkit-font-smoothing: antialiased;
+      }
+      .font-display { font-family: 'Cormorant Garamond', Georgia, 'Times New Roman', serif; font-weight: 600; letter-spacing: 0.01em; }
+      .eyebrow { font-size: 0.7rem; letter-spacing: 0.22em; text-transform: uppercase; color: var(--gold); font-weight: 600; }
+      .panel { background: #ffffff; border: 1px solid var(--line); border-radius: 0.5rem; box-shadow: 0 1px 2px rgb(28 25 23 / 0.04); }
+      .btn-primary { background: var(--brand); color: #ffffff; transition: background-color 150ms; }
+      .btn-primary:hover { background: var(--brand-dark); }
+      .btn-primary:disabled { opacity: 0.5; }
+      .text-brand { color: var(--brand); }
+      .text-gold { color: var(--gold); }
+      .focus-gold:focus { outline: none; border-color: var(--gold); box-shadow: 0 0 0 3px rgb(179 145 90 / 0.25); }
     </style>
   </head>
   <body>

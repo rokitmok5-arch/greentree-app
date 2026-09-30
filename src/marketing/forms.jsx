@@ -1,14 +1,14 @@
 import React, { useState } from 'react';
-import { EMPTY_CAMPAIGN, EMPTY_STRATEGY, KPIS, OBJECTIVES, PLATFORMS, STRATEGY_STATUSES, TACTICS } from './constants.js';
+import { EMPTY_CAMPAIGN, EMPTY_STRATEGY, KPIS, OBJECTIVES, PILLAR_NAMES, PLATFORMS, STRATEGY_STATUSES, TACTICS } from './constants.js';
 import { COUNT_FIELDS, toNumber } from './metrics.js';
 
-const inputClass = 'w-full p-2 border border-gray-300 rounded-md text-sm focus:ring-2 focus:ring-green-500 focus:border-transparent';
+const inputClass = 'w-full p-2 border border-gray-300 rounded-md text-sm focus-gold';
 
 export function Modal({ title, children, onClose }) {
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-40 p-4" onClick={onClose}>
       <div className="bg-white rounded-lg p-6 w-full max-w-2xl max-h-[90vh] overflow-y-auto" onClick={e => e.stopPropagation()}>
-        <h3 className="text-xl font-semibold text-gray-900 mb-4">{title}</h3>
+        <h3 className="font-display text-3xl text-stone-900 mb-4">{title}</h3>
         {children}
       </div>
     </div>
@@ -63,6 +63,12 @@ export function CampaignForm({ initial, strategies, onSave, onCancel }) {
         <Field label="Tactic">
           <select className={inputClass} value={form.tactic} onChange={set('tactic')}>
             {withCurrent(TACTICS, form.tactic).map(t => <option key={t}>{t}</option>)}
+          </select>
+        </Field>
+        <Field label="Content pillar" hint="Leave blank for paid ads">
+          <select className={inputClass} value={form.pillar} onChange={set('pillar')}>
+            <option value="">None</option>
+            {withCurrent(PILLAR_NAMES, form.pillar).map(p => <option key={p}>{p}</option>)}
           </select>
         </Field>
         <Field label="Objective">
@@ -154,7 +160,7 @@ export function StrategyForm({ initial, onSave, onCancel }) {
 
 const FormButtons = ({ onSave, onCancel }) => (
   <div className="flex gap-3 mt-6">
-    <button onClick={onSave} className="flex-1 bg-green-600 text-white py-2 px-4 rounded-md hover:bg-green-700">Save</button>
+    <button onClick={onSave} className="flex-1 btn-primary py-2 px-4 rounded-md">Save</button>
     <button onClick={onCancel} className="flex-1 bg-gray-200 text-gray-700 py-2 px-4 rounded-md hover:bg-gray-300">Cancel</button>
   </div>
 );

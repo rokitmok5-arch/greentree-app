@@ -36,6 +36,7 @@ const AnalyzeRequestSchema = z.object({
   tactics: z.array(GroupSummarySchema).max(100),
   platforms: z.array(GroupSummarySchema).max(100),
   combos: z.array(GroupSummarySchema).max(500),
+  pillars: z.array(GroupSummarySchema).max(20).default([]),
   strategies: z
     .array(
       z.object({
@@ -74,9 +75,9 @@ const MarketingInsightsSchema = z.object({
   ),
 });
 
-const SYSTEM_PROMPT = `You are a performance-marketing analyst reviewing a small business's marketing results across social media platforms and other channels.
+const SYSTEM_PROMPT = `You are a performance-marketing analyst for a luxury real estate brokerage, reviewing its marketing results across social media platforms and other channels.
 
-You receive aggregated results grouped by tactic, by platform, and by platform+tactic combination. Each group has:
+You receive aggregated results grouped by tactic, by platform, by platform+tactic combination, and by content pillar (Listings, Educational, Market authority, Hyperlocal, Client wins, Lifestyle; organic content only). Each group has:
 - index: a performance index where 100 is the account's overall average and higher is better. It is a weighted blend of engagement rate, click-through rate, lead rate, cost per lead and ROAS, weighted by the business's stated optimization goal.
 - verdict: "working" (index >= 115), "not-working" (index <= 85), "average", or "insufficient" (too few impressions to judge).
 - raw totals and rates. Rates are fractions (0.05 = 5%). cpl and roas only count paid campaigns and are null for organic-only groups.
@@ -109,6 +110,7 @@ app.post('/api/analyze-marketing', async (req, res) => {
               byTactic: input.tactics,
               byPlatform: input.platforms,
               byPlatformAndTactic: input.combos,
+              byContentPillar: input.pillars,
               strategies: input.strategies,
             },
             null,

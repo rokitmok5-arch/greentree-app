@@ -1,13 +1,15 @@
 import React, { useCallback, useMemo, useState } from 'react';
-import { BarChart3, Filter, LayoutDashboard, ListChecks, Share2, Target } from 'lucide-react';
+import { BarChart3, CalendarDays, Filter, LayoutDashboard, ListChecks, Share2, Target } from 'lucide-react';
 import { SAMPLE_CAMPAIGNS, SAMPLE_STRATEGIES } from './marketing/constants.js';
 import { SCORING_GOALS } from './marketing/metrics.js';
 import { campaignsToCsv, csvToCampaigns, downloadText, usePersistentState } from './marketing/data.js';
 import { CampaignForm, Modal, StrategyForm } from './marketing/forms.jsx';
+import { buildSamplePosts, ContentStudio } from './marketing/studio.jsx';
 import { AnalysisView, CampaignsView, Dashboard, PlatformsView, StrategiesView } from './marketing/views.jsx';
 
 const TABS = [
   { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard },
+  { id: 'studio', label: 'Content Studio', icon: CalendarDays },
   { id: 'campaigns', label: 'Campaigns', icon: ListChecks },
   { id: 'platforms', label: 'Platforms', icon: Share2 },
   { id: 'analysis', label: 'Tactic Analysis', icon: BarChart3 },
@@ -38,6 +40,7 @@ export default function MarketingHub() {
   const [activeTab, setActiveTab] = useState('dashboard');
   const [campaigns, setCampaigns] = usePersistentState('campaigns', SAMPLE_CAMPAIGNS);
   const [strategies, setStrategies] = usePersistentState('strategies', SAMPLE_STRATEGIES);
+  const [posts, setPosts] = usePersistentState('posts', buildSamplePosts);
   const [filters, setFilters] = usePersistentState('filters', { period: 'all', platform: '', goal: 'balanced' });
   const [editing, setEditing] = useState(null); // { kind: 'campaign' | 'strategy', item }
   const [notice, setNotice] = useState('');
@@ -82,18 +85,40 @@ export default function MarketingHub() {
     if (!window.confirm('Replace all campaigns and strategies with the sample data?')) return;
     setCampaigns(SAMPLE_CAMPAIGNS);
     setStrategies(SAMPLE_STRATEGIES);
+    setPosts(buildSamplePosts());
   };
 
   const clearAll = () => {
-    if (!window.confirm('Delete every campaign and strategy? Export a CSV first if you want a backup.')) return;
+    if (!window.confirm('Delete every campaign, strategy and scheduled post? Export a CSV first if you want a backup.')) return;
     setCampaigns([]);
     setStrategies([]);
+    setPosts([]);
+  };
+
+  // Turn a published post into a campaign so its results count toward the tactic analysis.
+  const logPostResults = post => {
+    setActiveTab('campaigns');
+    setEditing({
+      kind: 'campaign',
+      item: {
+        name: post.title,
+        platform: post.platforms[0] ?? 'Instagram',
+        tactic: post.tactic,
+        pillar: post.pillar,
+        objective: 'Engagement',
+        startDate: post.date,
+        endDate: post.date,
+        notes: post.platforms.length > 1 ? `Also posted to ${post.platforms.slice(1).join(', ')}.` : ''
+      }
+    });
   };
 
   const renderTab = () => {
     switch (activeTab) {
       case 'dashboard':
         return <Dashboard campaigns={visibleCampaigns} goal={filters.goal} goToAnalysis={() => setActiveTab('analysis')} />;
+      case 'studio':
+        return <ContentStudio posts={posts} setPosts={setPosts} onLogResults={logPostResults} />;
       case 'campaigns':
         return (
           <CampaignsView
@@ -129,40 +154,44 @@ export default function MarketingHub() {
     }
   };
 
-  const selectClass = 'border border-gray-300 rounded-md px-3 py-1.5 text-sm bg-white';
+  const selectClass = 'border border-stone-300 rounded-md px-3 py-1.5 text-sm bg-white focus-gold';
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <header className="bg-white shadow-sm border-b">
-        <div className="max-w-7xl mx-auto px-4 py-4 flex items-center gap-3">
-          <div className="w-8 h-8 bg-green-600 rounded-lg flex items-center justify-center">
-            <span className="text-white font-bold text-sm">GT</span>
+    <div className="min-h-screen">
+      <header style={{ background: 'var(--brand)' }}>
+        <div className="max-w-7xl mx-auto px-4 pt-6 pb-4 flex flex-wrap items-end justify-between gap-4">
+          <div className="flex items-center gap-4">
+            <div className="w-12 h-12 rounded-full border flex items-center justify-center" style={{ borderColor: 'var(--gold)' }}>
+              <span className="font-display text-xl text-gold">GT</span>
+            </div>
+            <div>
+              <p className="font-display text-3xl leading-none text-white tracking-wide">Green Tree Properties</p>
+              <p className="eyebrow mt-2">Marketing Studio</p>
+            </div>
           </div>
-          <div>
-            <h1 className="text-xl font-bold text-gray-900">GreenTree Marketing Hub</h1>
-            <p className="text-sm text-gray-500">Strategies, social platforms, and which tactics actually work</p>
+          <div className="text-right">
+            <p className="text-sm text-white">Kevin Hood, Broker</p>
+            <p className="text-xs" style={{ color: 'var(--gold-light)' }}>DRE# 01476642 · Orange County & North County San Diego</p>
           </div>
         </div>
-      </header>
-
-      <nav className="bg-white border-b">
-        <div className="max-w-7xl mx-auto px-4 flex overflow-x-auto">
+        <nav className="max-w-7xl mx-auto px-4 flex overflow-x-auto">
           {TABS.map(({ id, label, icon: Icon }) => (
             <button
               key={id}
               onClick={() => setActiveTab(id)}
-              className={`flex items-center gap-2 px-4 py-4 border-b-2 font-medium text-sm whitespace-nowrap ${
-                activeTab === id ? 'border-green-500 text-green-600' : 'border-transparent text-gray-500 hover:text-gray-700'
-              }`}
+              className="flex items-center gap-2 px-4 py-3 border-b-2 text-sm whitespace-nowrap transition-colors"
+              style={activeTab === id
+                ? { borderColor: 'var(--gold)', color: '#ffffff' }
+                : { borderColor: 'transparent', color: 'rgb(255 255 255 / 0.6)' }}
             >
               <Icon className="w-4 h-4" />
               {label}
             </button>
           ))}
-        </div>
-      </nav>
+        </nav>
+      </header>
 
-      <div className="bg-white border-b">
+      <div className="bg-white border-b" style={{ borderColor: 'var(--line)' }}>
         <div className="max-w-7xl mx-auto px-4 py-3 flex flex-wrap items-center gap-3">
           <Filter className="w-4 h-4 text-gray-500" />
           <select aria-label="Period" value={filters.period} onChange={setFilter('period')} className={selectClass}>

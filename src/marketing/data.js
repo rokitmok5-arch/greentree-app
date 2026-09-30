@@ -16,7 +16,7 @@ function readStored() {
 // Like useState, but the value survives reloads. Falls back to in-memory state when
 // storage is unavailable (private windows, blocked site data).
 export function usePersistentState(field, initialValue) {
-  const [value, setValue] = useState(() => readStored()?.[field] ?? initialValue);
+  const [value, setValue] = useState(() => readStored()?.[field] ?? (typeof initialValue === 'function' ? initialValue() : initialValue));
   useEffect(() => {
     try {
       const current = readStored() ?? {};
@@ -28,7 +28,7 @@ export function usePersistentState(field, initialValue) {
   return [value, setValue];
 }
 
-export const CSV_COLUMNS = ['name', 'platform', 'tactic', 'objective', 'startDate', 'endDate', ...COUNT_FIELDS, 'notes'];
+export const CSV_COLUMNS = ['name', 'platform', 'tactic', 'pillar', 'objective', 'startDate', 'endDate', ...COUNT_FIELDS, 'notes'];
 
 // Common column names from ad-platform exports, mapped to our fields.
 const HEADER_ALIASES = {
@@ -38,6 +38,7 @@ const HEADER_ALIASES = {
   'network': 'platform',
   'format': 'tactic',
   'content type': 'tactic',
+  'content pillar': 'pillar',
   'goal': 'objective',
   'start': 'startDate',
   'start date': 'startDate',
@@ -117,6 +118,7 @@ export function csvToCampaigns(text) {
     campaigns.push({
       platform: 'Other',
       tactic: 'Other',
+      pillar: '',
       objective: 'Leads',
       strategyId: '',
       startDate: '',
